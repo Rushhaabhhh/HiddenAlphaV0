@@ -1,6 +1,6 @@
 import { Stock } from '../lib/types';
 
-const BASE_URL = 'https://hiddenalphav0.onrender.com';
+const BASE_URL = 'https://hiddenalphav0-1.onrender.com';
 
 export async function fetchStocks(): Promise<Stock[]> {
   try {
