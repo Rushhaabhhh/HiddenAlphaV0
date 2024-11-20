@@ -1,6 +1,6 @@
 module stock-screener
 
-go 1.23.3
+go 1.23.2
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect

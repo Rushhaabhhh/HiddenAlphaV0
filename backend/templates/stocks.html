@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Screener Results</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Filtered Stocks</h1>
+    <p>Query: {{.Query}}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Stock Name</th>
+                <th>Market Cap</th>
+                <th>P/E Ratio</th>
+                <th>ROE</th>
+                <th>Debt/Equity</th>
+                <th>Dividend Yield</th>
+                <th>Revenue Growth</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Stocks}}
+            <tr>
+                <td>{{index . "Stock Name"}}</td>
+                <td>{{index . "Market Capitalization"}}</td>
+                <td>{{index . "P/E Ratio"}}</td>
+                <td>{{index . "ROE"}}</td>
+                <td>{{index . "Debt/Equity Ratio"}}</td>
+                <td>{{index . "Dividend Yield"}}</td>
+                <td>{{index . "Revenue Growth"}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
