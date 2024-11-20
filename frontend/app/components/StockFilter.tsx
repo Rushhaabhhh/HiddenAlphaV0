@@ -13,7 +13,11 @@ const StockFilter: React.FC<StockFilterProps> = ({ onFilteredStocks }) => {
     e.preventDefault();
     try {
       const filteredStocks = await filterStocks(query);
-      onFilteredStocks(filteredStocks);
+      if (Array.isArray(filteredStocks)) {
+        onFilteredStocks(filteredStocks);
+      } else {
+        console.error('Error filtering stocks', filteredStocks);
+      }
     } catch (error) {
       console.error('Error filtering stocks', error);
     }
