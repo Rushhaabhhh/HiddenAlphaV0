@@ -1,14 +1,15 @@
+'use server';
+
 import { Stock } from '../lib/types';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://hiddenalphav0-1.onrender.com';
 
-export async function fetchStocks(acceptHtml: boolean = false): Promise<Stock[] | string> {
+export async function fetchStocks(): Promise<Stock[]> {
   try {
     const response = await fetch(`${BASE_URL}/stocks`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'text/html',
-        'Accept': acceptHtml ? 'text/html' : 'application/json',
+        'Content-Type': 'application/json',
       },
     });
 
@@ -18,15 +19,8 @@ export async function fetchStocks(acceptHtml: boolean = false): Promise<Stock[] 
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
 
-    const contentType = response.headers.get('Content-Type') || '';
-    if (contentType.includes('text/html')) {
-      const html = await response.text();
-      console.log('Fetched HTML stocks:', html);
-      return html;
-    }
-
     const data = await response.json();
-    console.log('Fetched JSON stocks:', data);
+    console.log('Fetched stocks:', data);
     return data;
   } catch (error) {
     console.error('Error fetching stocks:', error);
@@ -34,13 +28,12 @@ export async function fetchStocks(acceptHtml: boolean = false): Promise<Stock[] 
   }
 }
 
-export async function filterStocks(query: string, acceptHtml: boolean = false): Promise<Stock[] | string> {
+export async function filterStocks(query: string): Promise<Stock[]> {
   try {
     const response = await fetch(`${BASE_URL}/filter`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/html',
-        'Accept': acceptHtml ? 'text/html' : 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ query }),
     });
@@ -51,15 +44,8 @@ export async function filterStocks(query: string, acceptHtml: boolean = false): 
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
 
-    const contentType = response.headers.get('Content-Type') || '';
-    if (contentType.includes('text/html')) {
-      const html = await response.text();
-      console.log('Filtered HTML stocks:', html);
-      return html;
-    }
-
     const data = await response.json();
-    console.log('Filtered JSON stocks:', data);
+    console.log('Filtered stocks:', data);
     return data;
   } catch (error) {
     console.error('Error filtering stocks:', error);

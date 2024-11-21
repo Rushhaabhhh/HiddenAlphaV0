@@ -9,14 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "child_process": "^1.0.2",
     "framer-motion": "^11.11.17",
+    "fs": "^0.0.1-security",
+    "jsdom": "^25.0.1",
     "lucide-react": "^0.460.0",
+    "net": "^1.0.2",
     "next": "15.0.3",
+    "node-fetch": "^3.3.2",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tls": "^0.0.1"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

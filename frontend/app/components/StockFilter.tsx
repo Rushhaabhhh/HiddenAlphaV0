@@ -1,23 +1,22 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Stock } from '../lib/types';
 import { filterStocks } from '../services/StockService';
 
 interface StockFilterProps {
-  onFilteredStocks: (stocks: Stock[]) => void;
+  initialQuery: string; // Use deterministic data from server
 }
 
-const StockFilter: React.FC<StockFilterProps> = ({ onFilteredStocks }) => {
-  const [query, setQuery] = useState('');
+const StockFilter: React.FC<StockFilterProps> = ({ initialQuery }) => {
+  const [query, setQuery] = useState(initialQuery);
+  const [filteredStocks, setFilteredStocks] = useState<Stock[] | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const filteredStocks = await filterStocks(query);
-      if (Array.isArray(filteredStocks)) {
-        onFilteredStocks(filteredStocks);
-      } else {
-        console.error('Error filtering stocks', filteredStocks);
-      }
+      const stocks = await filterStocks(query);
+      setFilteredStocks(stocks);
     } catch (error) {
       console.error('Error filtering stocks', error);
     }

@@ -52,7 +52,7 @@ func loadStocksFromCSV(filename string) ([]Stock, error) {
 	for i, record := range records[1:] {
 		stock, err := parseStockRecord(record)
 		if err != nil {
-			log.Printf("Error parsing record %d: %v", i+1, err)
+			log.Printf("Error parsing record %d: %v", i, err)
 			continue
 		}
 		stocks = append(stocks, stock)
@@ -62,23 +62,15 @@ func loadStocksFromCSV(filename string) ([]Stock, error) {
 }
 
 func parseStockRecord(record []string) (Stock, error) {
-	toFloat := func(val string) (float64, error) {
-		return strconv.ParseFloat(strings.TrimSpace(val), 64)
-	}
-
-	marketCap, err := toFloat(record[1])
-	if err != nil {
-		return Stock{}, err
-	}
-
-	peRatio, _ := toFloat(record[2])
-	roe, _ := toFloat(record[3])
-	debtEquity, _ := toFloat(record[4])
-	dividendYield, _ := toFloat(record[5])
-	revenueGrowth, _ := toFloat(record[6])
-	epsGrowth, _ := toFloat(record[7])
-	currentRatio, _ := toFloat(record[8])
-	grossMargin, _ := toFloat(record[9])
+	marketCap, _ := strconv.ParseFloat(record[1], 64)
+	peRatio, _ := strconv.ParseFloat(record[2], 64)
+	roe, _ := strconv.ParseFloat(record[3], 64)
+	debtEquity, _ := strconv.ParseFloat(record[4], 64)
+	dividendYield, _ := strconv.ParseFloat(record[5], 64)
+	revenueGrowth, _ := strconv.ParseFloat(record[6], 64)
+	epsGrowth, _ := strconv.ParseFloat(record[7], 64)
+	currentRatio, _ := strconv.ParseFloat(record[8], 64)
+	grossMargin, _ := strconv.ParseFloat(record[9], 64)
 
 	return Stock{
 		StockName:        record[0],
@@ -100,7 +92,8 @@ func parseQuery(queryString string) []FilterCondition {
 
 	for _, part := range queryParts {
 		part = strings.TrimSpace(part)
-
+		
+		// Identify the comparison operator
 		var operator string
 		switch {
 		case strings.Contains(part, ">="):
@@ -117,6 +110,7 @@ func parseQuery(queryString string) []FilterCondition {
 			continue
 		}
 
+		// Split the condition
 		components := strings.Split(part, operator)
 		if len(components) != 2 {
 			continue
@@ -205,11 +199,9 @@ func matchesConditions(stock Stock, conditions []FilterCondition) bool {
 func main() {
 	r := gin.Default()
 
-	r.LoadHTMLGlob("templates/*")
-	log.Println("Templates loaded from ./templates/")
-
+	// Configure CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "https://hidden-alpha-v0.vercel.app"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://hidden-alpha-v0.vercel.app/", "*"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		AllowCredentials: true,
@@ -221,13 +213,7 @@ func main() {
 	}
 
 	r.GET("/stocks", func(c *gin.Context) {
-		accept := c.GetHeader("Accept")
-		switch {
-		case strings.Contains(accept, "text/html"):
-			c.HTML(http.StatusOK, "stocks.html", gin.H{"Stocks": stocks})
-		default:
-			c.JSON(http.StatusOK, stocks)
-		}
+		c.JSON(http.StatusOK, stocks)
 	})
 
 	r.POST("/filter", func(c *gin.Context) {
@@ -237,15 +223,10 @@ func main() {
 			return
 		}
 
-		filteredStocks := filterStocks(stocks, parseQuery(req.Query))
-		accept := c.GetHeader("Accept")
+		conditions := parseQuery(req.Query)
+		filteredStocks := filterStocks(stocks, conditions)
 
-		switch {
-		case strings.Contains(accept, "text/html"):
-			c.HTML(http.StatusOK, "stocks.html", gin.H{"Stocks": filteredStocks, "Query": req.Query})
-		default:
-			c.JSON(http.StatusOK, filteredStocks)
-		}
+		c.JSON(http.StatusOK, filteredStocks)
 	})
 
 	log.Println("Server running on :8080")

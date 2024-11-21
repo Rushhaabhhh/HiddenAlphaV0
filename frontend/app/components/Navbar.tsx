@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Search, User, ChevronDown } from 'lucide-react';
